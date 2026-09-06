@@ -8,6 +8,25 @@ const form = document.getElementById("predictForm");
 const btn = document.getElementById("predictBtn");
 const error = document.getElementById("formError");
 
+// Theme preference: dark is the default; the user's choice is remembered.
+const themeToggle = document.getElementById("themeToggle");
+const themeColor = document.querySelector('meta[name="theme-color"]');
+const savedTheme = localStorage.getItem("nystay-theme");
+
+function setTheme(theme) {
+  const isLight = theme === "light";
+  document.body.classList.toggle("light", isLight);
+  themeToggle.setAttribute("aria-pressed", String(isLight));
+  themeToggle.setAttribute("aria-label", `Switch to ${isLight ? "dark" : "light"} mode`);
+  themeColor.setAttribute("content", isLight ? "#fff8ef" : "#080706");
+  localStorage.setItem("nystay-theme", theme);
+}
+
+setTheme(savedTheme === "light" ? "light" : "dark");
+themeToggle.addEventListener("click", () => {
+  setTheme(document.body.classList.contains("light") ? "dark" : "light");
+});
+
 // Quick-start sample listings
 const examples = [
   {
