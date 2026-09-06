@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#080b12">
+  <title>NYStay AI — Listing Predictor</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="orb a"></div>
+  <div class="orb b"></div>
+
+  <div class="shell">
+    <aside>
+      <a class="brand" href="#top">
+        <b>N</b><span>NYStay <i>AI</i></span>
+      </a>
+      <nav>
+        <a class="active" href="#top">◈ <span>Overview</span></a>
+        <a href="#predictor">⌁ <span>Predictor</span></a>
+        <a href="#details">◇ <span>Model details</span></a>
+      </nav>
+      <small><i></i> NYC inference node</small>
+    </aside>
+
+    <main id="top">
+      <header>
+        <button class="hamburger" type="button">☰</button>
+        <p>WORKSPACE <em>/</em> NEW LISTING</p>
+        <div>
+          <span id="apiStatus" class="status"><i></i><b>Connecting model</b></span>
+          <strong>AS</strong>
+        </div>
+      </header>
+
+      <section class="hero reveal">
+        <div>
+          <label>✦ MACHINE LEARNING WORKSPACE</label>
+          <h1>Know the stay<br><em>before it goes live.</em></h1>
+        </div>
+        <p>Classify an NYC listing into its most likely room type. Built for fast, considered decisions from real listing signals.</p>
+      </section>
+
+      <section class="samples reveal">
+        <span>QUICK-START SAMPLES</span>
+        <button class="active" data-example="0">Manhattan loft ↗</button>
+        <button data-example="1">Brooklyn brownstone ↗</button>
+        <button data-example="2">Queens room ↗</button>
+      </section>
+
+      <div class="grid" id="predictor">
+        <section class="form-card reveal">
+          <div class="title">
+            <div>
+              <label>01 — LISTING SIGNALS</label>
+              <h2>Tell us about the property</h2>
+              <p>Provide the essentials for a calibrated classification.</p>
+            </div>
+            <code>NYC / 01</code>
+          </div>
+
+          <form id="predictForm" novalidate>
+            <fieldset>
+              <legend><b>01</b> Location profile</legend>
+              <div class="fields two">
+                <label>
+                  Borough
+                  <select id="neighbourhood_group" name="neighbourhood_group" required>
+                    <option value="" selected disabled>Choose borough</option>
+                    <option>Manhattan</option>
+                    <option>Brooklyn</option>
+                    <option>Queens</option>
+                    <option>Bronx</option>
+                    <option>Staten Island</option>
+                  </select>
+                </label>
+                <label>
+                  Neighbourhood
+                  <input id="neighbourhood" name="neighbourhood" placeholder="e.g. Williamsburg" required>
+                </label>
+                <label>
+                  Latitude
+                  <span class="unit">
+                    <input id="latitude" name="latitude" type="number" step="0.000001" min="-90" max="90" placeholder="40.7128" required>
+                    <b>°N</b>
+                  </span>
+                </label>
+                <label>
+                  Longitude
+                  <span class="unit">
+                    <input id="longitude" name="longitude" type="number" step="0.000001" min="-180" max="180" placeholder="-74.0060" required>
+                    <b>°W</b>
+                  </span>
+                </label>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend><b>02</b> Stay & availability</legend>
+              <div class="fields three">
+                <label>
+                  Nightly price
+                  <span class="unit currency">
+                    <b>$</b>
+                    <input id="price" name="price" type="number" min="1" placeholder="150" required>
+                  </span>
+                </label>
+                <label>
+                  Minimum nights
+                  <input id="minimum_nights" name="minimum_nights" type="number" min="1" max="365" placeholder="3" required>
+                </label>
+                <label>
+                  Available annually
+                  <span class="unit">
+                    <input id="availability_365" name="availability_365" type="number" min="0" max="365" placeholder="180" required>
+                    <b>/365</b>
+                  </span>
+                </label>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend><b>03</b> Listing traction</legend>
+              <div class="fields three">
+                <label>
+                  Total reviews
+                  <input id="number_of_reviews" name="number_of_reviews" type="number" min="0" placeholder="24" required>
+                </label>
+                <label>
+                  Reviews / month
+                  <input id="reviews_per_month" name="reviews_per_month" type="number" min="0" step="0.01" placeholder="1.2" required>
+                </label>
+                <label>
+                  Host listings
+                  <input id="calculated_host_listings_count" name="calculated_host_listings_count" type="number" min="0" placeholder="1" required>
+                </label>
+              </div>
+            </fieldset>
+
+            <button id="predictBtn" class="predict" type="submit">
+              <span>✦</span>
+              <b class="buttonText">Run classification</b>
+              <em>→</em>
+              <i></i>
+            </button>
+            <p id="formError" class="error" role="alert"></p>
+          </form>
+        </section>
+
+        <section class="side">
+          <article class="result-card reveal">
+            <div class="map">
+              <div></div>
+              <span>NYC SPATIAL CONTEXT</span>
+              <b id="cityCoords">40.7128° N · 74.0060° W</b>
+            </div>
+
+            <div class="result">
+              <div class="result-head">
+                <label><i></i> AI CLASSIFICATION</label>
+                <small id="resultTime">Awaiting input</small>
+              </div>
+              <div id="resultEmpty" class="empty">
+                <strong>⌁</strong>
+                <h2>Ready when you are.</h2>
+                <p>Your model result and probability breakdown will appear here.</p>
+              </div>
+              <div id="resultContent" hidden>
+                <label class="likely">MOST LIKELY LISTING TYPE</label>
+                <h2 id="predictedName">—</h2>
+                <p class="desc">Prediction generated from location, price, availability and host signals.</p>
+                <div class="confidence">
+                  <div>
+                    <span>Model confidence</span>
+                    <b id="confidenceValue">0%</b>
+                  </div>
+                  <i><em id="confidenceBar"></em></i>
+                </div>
+                <div class="prob-title">CLASS PROBABILITIES <b>LIVE</b></div>
+                <div id="probList"></div>
+              </div>
+            </div>
+          </article>
+
+          <article class="details reveal" id="details">
+            <button id="detailsBtn" type="button" aria-expanded="false">
+              <span>◇ &nbsp; Model & inference details</span>
+              <b>+</b>
+            </button>
+            <div id="detailsContent">
+              <p><span>MODEL</span>Random Forest pipeline</p>
+              <p><span>FEATURES</span>10 listing attributes</p>
+              <p><span>OUTPUT</span>Three room classes</p>
+            </div>
+          </article>
+        </section>
+      </div>
+
+      <footer>
+        <span>NYSTAY AI · LISTING INTELLIGENCE</span>
+        <span>Powered by FastAPI & scikit-learn</span>
+      </footer>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
